@@ -25,6 +25,7 @@ install:
  - export PATH=$HOME/.local/bin:$PATH
  - ./.travis/install-ghr.sh
  - ./.travis/install-stack.sh
+ - ./.travis/install-dapptools.sh
 
 script:
  - echo "$(stack ghc -- --version) [$(stack ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
@@ -32,11 +33,16 @@ script:
  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
    stack install readline --extra-include-dirs=/usr/local/opt/readline/include
                           --extra-lib-dirs=/usr/local/opt/readline/lib;
+   else
+   wget "http://mirrors.kernel.org/ubuntu/pool/universe/libs/libsecp256k1/libsecp256k1-0_0.1~20170810-1_amd64.deb" ;
+   wget "http://mirrors.kernel.org/ubuntu/pool/universe/libs/libsecp256k1/libsecp256k1-dev_0.1~20170810-1_amd64.deb" ;
+   sudo dpkg -i libsecp256k1-0_0.1~20170810-1_amd64.deb libsecp256k1-dev_0.1~20170810-1_amd64.deb ;
    fi
  - |
    set -ex
    # Run tests
-   stack --no-terminal test --ghc-options="$GHC_OPTIONS"
+   ls -R "$HOME/.nix-profile/"
+   stack --no-terminal test --ghc-options="$GHC_OPTIONS" --extra-lib-dirs="$HOME/.nix-profile/lib/" --extra-include-dirs="$HOME/.nix-profile/include/"
    set +ex
 
 after_success:
