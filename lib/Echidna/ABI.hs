@@ -19,6 +19,7 @@ module Echidna.ABI (
   , genAbiType
   , genAbiUInt
   , genAbiValue
+  , genAbiValueOfType
   , mutateCall
   , mutateCallSeq
   , mutateValue
